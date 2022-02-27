@@ -11,7 +11,7 @@ require (
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/docker/docker v20.10.2+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect
-	github.com/gin-gonic/gin v1.6.3
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-logr/logr v0.3.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/mock v1.4.1
