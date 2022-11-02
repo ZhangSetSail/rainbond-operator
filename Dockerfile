@@ -21,10 +21,17 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH="${ARCH}" GO111MODULE=on go build -a -o mana
 
 
 FROM alpine:3.11.2
+ARG ARCH=amd64
 RUN apk add --update tzdata \
     && mkdir /app \
     && apk add --update apache2-utils \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* && \
+    set -eux; \
+    if [ "${ARCH}" = "arm64" ]; then \
+      wget "https://goodrain-pkg.oss-cn-shanghai.aliyuncs.com/pkg/curl-arm64" && chmod +x curl-arm64 && mv curl-arm64 /usr/local/bin/curl; \
+    else \
+      wget "https://goodrain-pkg.oss-cn-shanghai.aliyuncs.com/pkg/curl" && chmod +x curl && mv curl /usr/local/bin/; \
+    fi
 ENV TZ=Asia/Shanghai
 WORKDIR /
 COPY --from=builder /workspace/manager .
