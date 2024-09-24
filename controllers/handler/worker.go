@@ -11,10 +11,8 @@ import (
 
 	"github.com/goodrain/rainbond-operator/util/probeutil"
 
-	"github.com/goodrain/rainbond-operator/util/commonutil"
-	"github.com/goodrain/rainbond-operator/util/constants"
-
 	rainbondv1alpha1 "github.com/goodrain/rainbond-operator/api/v1alpha1"
+	"github.com/goodrain/rainbond-operator/util/commonutil"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -103,34 +101,12 @@ func (w *worker) SetStorageClassNameRWX(pvcParameters *pvcParameters) {
 }
 
 func (w *worker) ResourcesCreateIfNotExists() []client.Object {
-	if w.component.Labels["persistentVolumeClaimAccessModes"] == string(corev1.ReadWriteOnce) {
-		return []client.Object{
-			createPersistentVolumeClaimRWO(w.component.Namespace, constants.GrDataPVC, w.pvcParametersRWX, w.labels, w.storageRequest),
-		}
-	}
-	return []client.Object{
-		// pvc is immutable after creation except resources.requests for bound claims
-		createPersistentVolumeClaimRWX(w.component.Namespace, constants.GrDataPVC, w.pvcParametersRWX, w.labels, w.storageRequest),
-	}
+	return []client.Object{}
 }
 
 func (w *worker) deployment() client.Object {
-	volumeMounts := []corev1.VolumeMount{
-		{
-			Name:      "grdata",
-			MountPath: "/grdata",
-		},
-	}
-	volumes := []corev1.Volume{
-		{
-			Name: "grdata",
-			VolumeSource: corev1.VolumeSource{
-				PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-					ClaimName: constants.GrDataPVC,
-				},
-			},
-		},
-	}
+	var volumeMounts []corev1.VolumeMount
+	var volumes []corev1.Volume
 	args := []string{
 		"--host-ip=$(POD_IP)",
 		"--node-name=$(POD_IP)",

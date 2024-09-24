@@ -187,24 +187,12 @@ func (h *hub) deployment() client.Object {
 	}
 	volumeMounts := []corev1.VolumeMount{
 		{
-			Name:      "hubdata",
-			MountPath: "/var/lib/registry",
-		},
-		{
 			Name:      "htpasswd",
 			MountPath: "/auth",
 			ReadOnly:  true,
 		},
 	}
 	volumes := []corev1.Volume{
-		{
-			Name: "hubdata",
-			VolumeSource: corev1.VolumeSource{
-				PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-					ClaimName: hubDataPvcName,
-				},
-			},
-		},
 		{
 			Name: "htpasswd",
 			VolumeSource: corev1.VolumeSource{

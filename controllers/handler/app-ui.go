@@ -150,10 +150,7 @@ func (a *appui) SetStorageClassNameRWX(pvcParameters *pvcParameters) {
 }
 
 func (a *appui) ResourcesCreateIfNotExists() []client.Object {
-	return []client.Object{
-		// pvc is immutable after creation except resources.requests for bound claims
-		createPersistentVolumeClaimRWX(a.component.Namespace, a.pvcName, a.pvcParametersRWX, a.labels, a.storageRequest),
-	}
+	return []client.Object{}
 }
 
 func (a *appui) deploymentForAppUI() client.Object {
@@ -218,44 +215,11 @@ func (a *appui) deploymentForAppUI() client.Object {
 				},
 			},
 		},
-		{
-			Name: "app",
-			VolumeSource: corev1.VolumeSource{
-				PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-					ClaimName: a.pvcName,
-				},
-			},
-		},
 	}
 	volumeMounts := []corev1.VolumeMount{
 		{
-			Name:      "app",
-			MountPath: "/app/data",
-			SubPath:   "data",
-		},
-		{
 			Name:      "ssl",
 			MountPath: "/app/region/ssl",
-		},
-		{
-			Name:      "app",
-			MountPath: "/app/logs/",
-			SubPath:   "logs",
-		},
-		{
-			Name:      "app",
-			MountPath: "/app/lock",
-			SubPath:   "lock",
-		},
-		{
-			Name:      "app",
-			MountPath: "/app/ui/console/migrations",
-			SubPath:   "console/migrations",
-		},
-		{
-			Name:      "app",
-			MountPath: "/app/ui/www/migrations",
-			SubPath:   "www/migrations",
 		},
 	}
 
